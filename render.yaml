@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: examiq-platform
+    env: python
+    buildCommand: npm install && npm run build && pip install -r requirements.txt
+    startCommand: python backend/server.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: NODE_VERSION
+        value: 20.0.0
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SMTP_EMAIL
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false

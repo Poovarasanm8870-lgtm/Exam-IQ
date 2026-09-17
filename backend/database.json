@@ -1,0 +1,142 @@
+{
+  "users": {
+    "aarav.aspirant@gmail.com": {
+      "id": "usr_1788590537464",
+      "name": "Aarav Sharma",
+      "email": "aarav.aspirant@gmail.com",
+      "phone": "+91 9876543210",
+      "role": "student",
+      "targetExamId": "ssc-cgl",
+      "targetExamName": "SSC CGL 2026",
+      "daysRemaining": 42,
+      "secondaryGoals": [
+        "IBPS PO",
+        "RRB NTPC"
+      ],
+      "streakDays": 1,
+      "lastActiveDate": "2026-09-05",
+      "testsAttempted": 0,
+      "avgAccuracy": 0,
+      "attemptsHistory": [],
+      "subjectAccuracy": {
+        "quant": 0,
+        "reasoning": 0,
+        "english": 0,
+        "ga": 0
+      },
+      "dailyChecklist": [
+        {
+          "id": 1,
+          "text": "Attempt 1 Full Mock Test",
+          "completed": false
+        },
+        {
+          "id": 2,
+          "text": "Revise Daily Current Affairs",
+          "completed": false
+        },
+        {
+          "id": 3,
+          "text": "Solve 20 Quant Pipes & Cisterns Questions",
+          "completed": false
+        },
+        {
+          "id": 4,
+          "text": "Review Negative Markings from Mock",
+          "completed": false
+        }
+      ]
+    }
+  },
+  "attempted_hashes": [
+    "SWYgdGhlIHByaWNlIG9mIGEgY29tbW9kaXR5IGlu",
+    "QSB0cmFkZXIgYm91Z2h0IGEgYmF0Y2ggb2YgMzUg",
+    "QSBjb21wYW554oCZcyBwcm9maXQgaW5jcmVhc2VkIGY=",
+    "SW4gdGhlIHJlYXNvbmluZyBzZWN0aW9uIG9mIHRo",
+    "SWYgdGhlIHNlbGxpbmcgcHJpY2Ugb2YgYW4gYXJ0",
+    "QSBzaG9wa2VlcGVyIGJvdWdodCBhIHNldCBvZiAz",
+    "QSBjYW5kaWRhdGXigJlzIHRvdGFsIHNjb3JlIGluIHQ=",
+    "QSBjYW5kaWRhdGUgc2NvcmVzIDgw4oCvJSBpbiB0aGU=",
+    "QSB0cmFkZXIgYm91Z2h0IGEgYmF0Y2ggb2YgMjAg",
+    "QSByZXRhaWxlciBvZmZlcnMgYSBkaXNjb3VudCBv",
+    "QSBjYW5kaWRhdGUgY29ycmVjdGx5IGFuc3dlcnMg",
+    "QSBjYW5kaWRhdGUgc2NvcmVzIDI4IG1hcmtzIG91",
+    "VGhlIElCUFMgUE8gMjAyNSBTaGlmdOKAkTEgUHJlbGk=",
+    "SWYgT2xpdmVib2FyZCBpbmN1cnMgYSBjb3N0IG9m",
+    "QSBtYW4gYm91Z2h0IGEgZ2FkZ2V0IGZvciDigrkyLDQ=",
+    "QSBjYW5kaWRhdGUgYXR0ZW1wdGVkIDMwIHF1ZXN0",
+    "T2xpdmVib2FyZCBvZmZlcnMgYSBidW5kbGUgb2Yg",
+    "QSBib29rIGlzIHNvbGQgZm9yIOKCuTMwIGFmdGVyIGc=",
+    "QSBiYXRjaCBvZiAyMDAgbW9jayB0ZXN0IHBhcGVy",
+    "VGhlIElCUFMgUE8gcHJlbGltcyBwYXBlciBoYXMg",
+    "QWNjb3JkaW5nIHRvIHRoZSBzYW1lIHBhcGVyLCBh",
+    "SWYgT2xpdmVib2FyZCBkZWNpZGVzIHRvIGluY3Jl",
+    "QSBjYW5kaWRhdGUgYXR0ZW1wdGVkIGFsbCAzNSBx",
+    "SWYgYSBjYW5kaWRhdGUgY2FuIHNvbHZlIDUgUXVh",
+    "QSBtYW4gYm91Z2h0IGEgcGFyY2VsIG9mIGxhbmQg",
+    "QSBzdHVkZW50IHNvbHZlcyAyMCUgbW9yZSBRdWFu",
+    "QSBwcm9kdWN0IGlzIHNvbGQgZm9yIOKCuTU2MCBhZnQ=",
+    "SWYgdGhlIGNvc3QgcHJpY2Ugb2YgYSBtb2NrIHRl",
+    "QWNjb3JkaW5nIHRvIHRoZSBQREYsIHRoZSBSZWFz",
+    "SW4gdGhlIHNlYXRpbmfigJFhcnJhbmdlbWVudCBwYXI=",
+    "T2xpdmVib2FyZCBzZWxscyBhIHNldCBvZiBJQklC",
+    "VGhlIFBERiBkZXNjcmliZXMgc2l4IHBlcnNvbnMg",
+    "QSBkZWFsZXIgc29sZCBhIFRWIHNldCBmb3Ig4oK5MTI=",
+    "QSBib29rIGlzIHNvbGQgZm9yIOKCuTU2MCBhZnRlciA=",
+    "RHVyaW5nIGEgcHJvbW90aW9uYWwgc2FsZSwgT2xp",
+    "VGhlIFBERiBtZW50aW9ucyB0aGF0IHRoZSBRdWFu",
+    "SWYgdGhlIHRvdGFsIHRpbWUgYWxsb3R0ZWQgZm9y"
+  ],
+  "pdf_chunks": [
+    {
+      "id": "chunk_1788534753",
+      "file_name": "IBPS-PO-2025-Shift-1-Prelims-PYP.pdf",
+      "exam": "IBPS PO 2026",
+      "text": "--- Page 1 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 1\nIBPS PO 2025 Shift 1 Prelims Memory Based Paper\nReasoning Ability\n35 Questions | 35 Marks | 20 min\nQuantitative Aptitude\n35 Questions | 35 Marks | 20 min\nEnglish Language\n30 Questions | 30 Marks | 20 min\nSECTION I: REASONING ABILITY (Q1-Q35)\nDirections: (Q1-Q5) Read the following information carefully and answer the questions. Eight persons - A, B, C, D, E, F, G and H -\nare sitting in a straight row facing North. Not all information is necessarily in the given order. B sits immediately to the left of H.\nOnly two persons sit between B and E. A sits immediately to the right of E. G sits second to the left of A. F sits third to the right of\nG. D sits between C and H but not at either extreme end. The number of persons to the left of C equals the number of persons to\nthe right of F.\nQ1. How many persons are sitting between H and F?\n(a) Two\n(b) Three\n(c) Four\n(d) Five\n(e) More than five\nQ2. Who is sitting at the extreme right end of the row?\n(a) A\n(b) B\n(c) C\n(d) E\n(e) None of these\nQ3. What is the position of G with respect to B?\n(a) Third to the left\n(b) Fourth to the left\n(c) Second to the right\n(d) Third to the right\n(e) Fifth to the left\nQ4. Which of the following pairs sit at the extreme ends of the row?\n(a) C and A\n(b) H and E\n(c) C and B\n(d) H and B\n(e) C and F\nQ5. Who sits immediately to the right of E?\n(a) G\n(b) F\n(c) D\n(d) A\n(e) H\nDirections: (Q6-Q8) Six persons P, Q, R, S, T and U are sitting around a circular table, some facing the centre and some facing\naway. Q sits immediately to the left of P. S sits third to the left of Q. T and U are immediate neighbours of S, but T does not face\nthe same direction as S. R is an immediate neighbour of both Q and U. P, Q and R face the centre; S and U face away from the\ncentre.\nQ6. Who is sitting second to the left of R?\n(a) P\n(b) T\n(c) U\n(d) S\n(e) Q\nQ7. How many persons face the centre?\n(a) Two\n(b) Three\n(c) Four\n(d) Five\n(e) Cannot be determined\nQ8. Which of the following sits exactly opposite to P?\n(a) S\n(b) U\n(c) T\n(d) R\n(e) Q\nDirections: (Q9-Q11) In each question, statements are followed by two conclusions I and II. Take the statements to be true even if\nthey seem at variance with commonly known facts. Decide which conclusion logically follows. (a) Only I follows (b) Only II follows\n(c) Either I or II follows (d) Neither I nor II follows (e) Both I and II follow\nQ9. Statements: All rivers are lakes. Some lakes are ponds. No pond is a well.\nConclusions: I. Some rivers are ponds.    II. No lake is a well.\nQ10. Statements: Only a few planets are stars. All stars are galaxies. No galaxy is a comet.\nConclusions: I. Some planets are not comets.    II. All galaxies being planets is a possibility.\nQ11. Statements: Some books are pens. Only a few pens are erasers. All erasers are rulers.\nConclusions: I. Some books are rulers.    II. All pens being rulers is a possibility.\n\n--- Page 2 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 2\nDirections: (Q12-Q13) In each question, a statement with symbols is given. Based on the given statements, find which\nconclusions are true. (a) Only I true (b) Only II true (c) Either I or II true (d) Neither I nor II true (e) Both I and II true\nQ12. Statement: J \u2265 K > L = M \u2264 N; O < K = P \u2264 Q\nConclusions: I. J > O  \n  II. Q \u2265 L\nQ13. Statement: A = B \u2265 C > D; E \u2264 F < D; G = H > C\nConclusions: I. G > E  \n  II. A > F\nDirections: (Q14-Q16) Read carefully. In a family of six members - M, N, O, P, Q and R - there are two married couples and three\ngenerations. M is the father-in-law of N. Q is the wife of M. R is the daughter of M and the wife of N. O is the son of N and R. P is\nthe sister of O.\nQ14. How is Q related to O?\n(a) Mother\n(b) Grandmother\n(c) Aunt\n(d) Great-grandmother\n(e) Cannot be determined\nQ15. How many female members are there in the family?\n(a) One\n(b) Two\n(c) Three\n(d) Four\n(e) Cannot be determined\nQ16. How is P related",
+      "timestamp": "2026-09-04 20:42:33"
+    },
+    {
+      "id": "chunk_1788534785",
+      "file_name": "IBPS-PO-2025-Shift-1-Prelims-PYP.pdf",
+      "exam": "IBPS PO 2026",
+      "text": "--- Page 1 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 1\nIBPS PO 2025 Shift 1 Prelims Memory Based Paper\nReasoning Ability\n35 Questions | 35 Marks | 20 min\nQuantitative Aptitude\n35 Questions | 35 Marks | 20 min\nEnglish Language\n30 Questions | 30 Marks | 20 min\nSECTION I: REASONING ABILITY (Q1-Q35)\nDirections: (Q1-Q5) Read the following information carefully and answer the questions. Eight persons - A, B, C, D, E, F, G and H -\nare sitting in a straight row facing North. Not all information is necessarily in the given order. B sits immediately to the left of H.\nOnly two persons sit between B and E. A sits immediately to the right of E. G sits second to the left of A. F sits third to the right of\nG. D sits between C and H but not at either extreme end. The number of persons to the left of C equals the number of persons to\nthe right of F.\nQ1. How many persons are sitting between H and F?\n(a) Two\n(b) Three\n(c) Four\n(d) Five\n(e) More than five\nQ2. Who is sitting at the extreme right end of the row?\n(a) A\n(b) B\n(c) C\n(d) E\n(e) None of these\nQ3. What is the position of G with respect to B?\n(a) Third to the left\n(b) Fourth to the left\n(c) Second to the right\n(d) Third to the right\n(e) Fifth to the left\nQ4. Which of the following pairs sit at the extreme ends of the row?\n(a) C and A\n(b) H and E\n(c) C and B\n(d) H and B\n(e) C and F\nQ5. Who sits immediately to the right of E?\n(a) G\n(b) F\n(c) D\n(d) A\n(e) H\nDirections: (Q6-Q8) Six persons P, Q, R, S, T and U are sitting around a circular table, some facing the centre and some facing\naway. Q sits immediately to the left of P. S sits third to the left of Q. T and U are immediate neighbours of S, but T does not face\nthe same direction as S. R is an immediate neighbour of both Q and U. P, Q and R face the centre; S and U face away from the\ncentre.\nQ6. Who is sitting second to the left of R?\n(a) P\n(b) T\n(c) U\n(d) S\n(e) Q\nQ7. How many persons face the centre?\n(a) Two\n(b) Three\n(c) Four\n(d) Five\n(e) Cannot be determined\nQ8. Which of the following sits exactly opposite to P?\n(a) S\n(b) U\n(c) T\n(d) R\n(e) Q\nDirections: (Q9-Q11) In each question, statements are followed by two conclusions I and II. Take the statements to be true even if\nthey seem at variance with commonly known facts. Decide which conclusion logically follows. (a) Only I follows (b) Only II follows\n(c) Either I or II follows (d) Neither I nor II follows (e) Both I and II follow\nQ9. Statements: All rivers are lakes. Some lakes are ponds. No pond is a well.\nConclusions: I. Some rivers are ponds.    II. No lake is a well.\nQ10. Statements: Only a few planets are stars. All stars are galaxies. No galaxy is a comet.\nConclusions: I. Some planets are not comets.    II. All galaxies being planets is a possibility.\nQ11. Statements: Some books are pens. Only a few pens are erasers. All erasers are rulers.\nConclusions: I. Some books are rulers.    II. All pens being rulers is a possibility.\n\n--- Page 2 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 2\nDirections: (Q12-Q13) In each question, a statement with symbols is given. Based on the given statements, find which\nconclusions are true. (a) Only I true (b) Only II true (c) Either I or II true (d) Neither I nor II true (e) Both I and II true\nQ12. Statement: J \u2265 K > L = M \u2264 N; O < K = P \u2264 Q\nConclusions: I. J > O  \n  II. Q \u2265 L\nQ13. Statement: A = B \u2265 C > D; E \u2264 F < D; G = H > C\nConclusions: I. G > E  \n  II. A > F\nDirections: (Q14-Q16) Read carefully. In a family of six members - M, N, O, P, Q and R - there are two married couples and three\ngenerations. M is the father-in-law of N. Q is the wife of M. R is the daughter of M and the wife of N. O is the son of N and R. P is\nthe sister of O.\nQ14. How is Q related to O?\n(a) Mother\n(b) Grandmother\n(c) Aunt\n(d) Great-grandmother\n(e) Cannot be determined\nQ15. How many female members are there in the family?\n(a) One\n(b) Two\n(c) Three\n(d) Four\n(e) Cannot be determined\nQ16. How is P related",
+      "timestamp": "2026-09-04 20:43:05"
+    },
+    {
+      "id": "chunk_1788590279",
+      "file_name": "IBPS-PO-2025-Shift-1-Prelims-PYP.pdf",
+      "exam": "IBPS PO 2026",
+      "text": "--- Page 1 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 1\nIBPS PO 2025 Shift 1 Prelims Memory Based Paper\nReasoning Ability\n35 Questions | 35 Marks | 20 min\nQuantitative Aptitude\n35 Questions | 35 Marks | 20 min\nEnglish Language\n30 Questions | 30 Marks | 20 min\nSECTION I: REASONING ABILITY (Q1-Q35)\nDirections: (Q1-Q5) Read the following information carefully and answer the questions. Eight persons - A, B, C, D, E, F, G and H -\nare sitting in a straight row facing North. Not all information is necessarily in the given order. B sits immediately to the left of H.\nOnly two persons sit between B and E. A sits immediately to the right of E. G sits second to the left of A. F sits third to the right of\nG. D sits between C and H but not at either extreme end. The number of persons to the left of C equals the number of persons to\nthe right of F.\nQ1. How many persons are sitting between H and F?\n(a) Two\n(b) Three\n(c) Four\n(d) Five\n(e) More than five\nQ2. Who is sitting at the extreme right end of the row?\n(a) A\n(b) B\n(c) C\n(d) E\n(e) None of these\nQ3. What is the position of G with respect to B?\n(a) Third to the left\n(b) Fourth to the left\n(c) Second to the right\n(d) Third to the right\n(e) Fifth to the left\nQ4. Which of the following pairs sit at the extreme ends of the row?\n(a) C and A\n(b) H and E\n(c) C and B\n(d) H and B\n(e) C and F\nQ5. Who sits immediately to the right of E?\n(a) G\n(b) F\n(c) D\n(d) A\n(e) H\nDirections: (Q6-Q8) Six persons P, Q, R, S, T and U are sitting around a circular table, some facing the centre and some facing\naway. Q sits immediately to the left of P. S sits third to the left of Q. T and U are immediate neighbours of S, but T does not face\nthe same direction as S. R is an immediate neighbour of both Q and U. P, Q and R face the centre; S and U face away from the\ncentre.\nQ6. Who is sitting second to the left of R?\n(a) P\n(b) T\n(c) U\n(d) S\n(e) Q\nQ7. How many persons face the centre?\n(a) Two\n(b) Three\n(c) Four\n(d) Five\n(e) Cannot be determined\nQ8. Which of the following sits exactly opposite to P?\n(a) S\n(b) U\n(c) T\n(d) R\n(e) Q\nDirections: (Q9-Q11) In each question, statements are followed by two conclusions I and II. Take the statements to be true even if\nthey seem at variance with commonly known facts. Decide which conclusion logically follows. (a) Only I follows (b) Only II follows\n(c) Either I or II follows (d) Neither I nor II follows (e) Both I and II follow\nQ9. Statements: All rivers are lakes. Some lakes are ponds. No pond is a well.\nConclusions: I. Some rivers are ponds.    II. No lake is a well.\nQ10. Statements: Only a few planets are stars. All stars are galaxies. No galaxy is a comet.\nConclusions: I. Some planets are not comets.    II. All galaxies being planets is a possibility.\nQ11. Statements: Some books are pens. Only a few pens are erasers. All erasers are rulers.\nConclusions: I. Some books are rulers.    II. All pens being rulers is a possibility.\n\n--- Page 2 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 2\nDirections: (Q12-Q13) In each question, a statement with symbols is given. Based on the given statements, find which\nconclusions are true. (a) Only I true (b) Only II true (c) Either I or II true (d) Neither I nor II true (e) Both I and II true\nQ12. Statement: J \u2265 K > L = M \u2264 N; O < K = P \u2264 Q\nConclusions: I. J > O  \n  II. Q \u2265 L\nQ13. Statement: A = B \u2265 C > D; E \u2264 F < D; G = H > C\nConclusions: I. G > E  \n  II. A > F\nDirections: (Q14-Q16) Read carefully. In a family of six members - M, N, O, P, Q and R - there are two married couples and three\ngenerations. M is the father-in-law of N. Q is the wife of M. R is the daughter of M and the wife of N. O is the son of N and R. P is\nthe sister of O.\nQ14. How is Q related to O?\n(a) Mother\n(b) Grandmother\n(c) Aunt\n(d) Great-grandmother\n(e) Cannot be determined\nQ15. How many female members are there in the family?\n(a) One\n(b) Two\n(c) Three\n(d) Four\n(e) Cannot be determined\nQ16. How is P related",
+      "timestamp": "2026-09-05 12:07:59"
+    }
+  ],
+  "ingested_documents": [
+    {
+      "id": "doc_1788534753",
+      "name": "IBPS-PO-2025-Shift-1-Prelims-PYP.pdf",
+      "exam": "IBPS PO 2026",
+      "pages": 10,
+      "extracted_snippet": "--- Page 1 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 1\nIBPS PO 2025 Shift 1 Prelims Memory Based Paper\nReasoning Ability\n35 Questions | 35 Marks | 20 min\nQuanti...",
+      "vector_chunks": 150,
+      "timestamp": "2026-09-04 20:42:33"
+    },
+    {
+      "id": "doc_1788534785",
+      "name": "IBPS-PO-2025-Shift-1-Prelims-PYP.pdf",
+      "exam": "IBPS PO 2026",
+      "pages": 10,
+      "extracted_snippet": "--- Page 1 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 1\nIBPS PO 2025 Shift 1 Prelims Memory Based Paper\nReasoning Ability\n35 Questions | 35 Marks | 20 min\nQuanti...",
+      "vector_chunks": 150,
+      "timestamp": "2026-09-04 20:43:05"
+    },
+    {
+      "id": "doc_1788590279",
+      "name": "IBPS-PO-2025-Shift-1-Prelims-PYP.pdf",
+      "exam": "IBPS PO 2026",
+      "pages": 10,
+      "extracted_snippet": "--- Page 1 ---\nOliveboard | IBPS PO 2025 Shift 1 Prelims - Corrected & Verified Edition Page 1\nIBPS PO 2025 Shift 1 Prelims Memory Based Paper\nReasoning Ability\n35 Questions | 35 Marks | 20 min\nQuanti...",
+      "vector_chunks": 150,
+      "timestamp": "2026-09-05 12:07:59"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Micro-animations */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.98); }
+}
+
+@keyframes blink-light-flash {
+  0%, 100% { 
+    background-color: #dc2626 !important; 
+    box-shadow: 0 0 15px #dc2626, 0 0 25px #dc2626 !important;
+    opacity: 1;
+  }
+  50% { 
+    background-color: #ffffff !important; 
+    box-shadow: 0 0 15px #ffffff, 0 0 25px #ffffff !important;
+    opacity: 0.2;
+  }
+}
+
+.blink-light-indicator {
+  animation: blink-light-flash 0.4s infinite ease-in-out !important;
+}
+
+@keyframes timer-flash-red-white {
+  0%, 100% { 
+    background-color: #dc2626 !important; 
+    color: #ffffff !important; 
+    border-color: #ffffff !important;
+    box-shadow: 0 0 35px rgba(220, 38, 38, 1) !important;
+  }
+  50% { 
+    background-color: #ffffff !important; 
+    color: #dc2626 !important; 
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 35px rgba(255, 255, 255, 1) !important;
+  }
+}
+
+.animate-timer-alert {
+  animation: timer-flash-red-white 0.5s infinite ease-in-out !important;
+}
+
+.animate-timer-alert *, 
+.animate-timer-alert span, 
+.animate-timer-alert div, 
+.animate-timer-alert svg {
+  color: inherit !important;
+  fill: currentColor !important;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
