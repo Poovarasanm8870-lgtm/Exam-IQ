@@ -1,5 +1,5 @@
 import React from 'react';
-import { useApp } from '../../context/AppContext';
+import { useApp, DEFAULT_DAILY_CHECKLIST } from '../../context/AppContext';
 import { 
   CheckCircle2, 
   Flame, 
@@ -14,7 +14,8 @@ import { MOTIVATIONAL_QUOTES } from '../../data/mockData';
 
 export default function DailyTrackerView() {
   const { user, toggleChecklistItem } = useApp();
-  const checklist = user?.dailyChecklist || [];
+  const rawChecklist = user?.dailyChecklist;
+  const checklist = (Array.isArray(rawChecklist) && rawChecklist.length > 0) ? rawChecklist : DEFAULT_DAILY_CHECKLIST;
   const completedCount = checklist.filter((item) => item.completed).length;
 
   return (

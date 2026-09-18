@@ -115,8 +115,35 @@ export default function AspirantDashboard() {
       </div>
 
       {/* 2. Quick Navigation Portals to Dedicated Pages */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
+        {/* Navigation Card 0: Target Exam Goal (Featured Distinctive Card) */}
+        <div 
+          onClick={() => setShowOnboardingModal(true)}
+          className="bg-gradient-to-br from-blue-50 via-indigo-50/80 to-sky-100/70 p-6 rounded-3xl border-2 border-blue-400/90 shadow-md hover:shadow-xl hover:border-blue-600 transition-all cursor-pointer group flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-md shadow-blue-500/20">
+                <Target className="w-6 h-6" />
+              </div>
+              <span className="bg-blue-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-xs">
+                {liveDaysRemaining} Days Left
+              </span>
+            </div>
+            <h3 className="font-extrabold text-blue-950 text-lg mb-1 font-outfit group-hover:text-blue-700 transition-colors">
+              {user?.targetExamName || 'SSC CGL 2026'}
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed mb-4">
+              Your active target exam goal. Click anytime to switch exam or adjust countdown.
+            </p>
+          </div>
+          <div className="text-xs font-extrabold text-blue-700 flex items-center space-x-1">
+            <span>Change Target Exam</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+
         {/* Navigation Card 1: Tests */}
         <div 
           onClick={() => setCurrentView('tests')}

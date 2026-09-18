@@ -1,5 +1,5 @@
 import React from 'react';
-import { useApp, computeDynamicSubjectAccuracy } from '../../context/AppContext';
+import { useApp, computeDynamicSubjectAccuracy, DEFAULT_DAILY_CHECKLIST } from '../../context/AppContext';
 import { 
   Activity, 
   BarChart3, 
@@ -21,7 +21,8 @@ export default function ActivityView() {
   
   // Dynamically compute subject accuracy from user's attempt history (wiping out stale 40% cached values)
   const subjectAcc = computeDynamicSubjectAccuracy(user?.attemptsHistory || []);
-  const checklist = user?.dailyChecklist || [];
+  const rawChecklist = user?.dailyChecklist;
+  const checklist = (Array.isArray(rawChecklist) && rawChecklist.length > 0) ? rawChecklist : DEFAULT_DAILY_CHECKLIST;
   const completedCount = checklist.filter((item) => item.completed).length;
   const checklistPercent = Math.round((completedCount / (checklist.length || 1)) * 100);
 

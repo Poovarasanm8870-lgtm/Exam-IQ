@@ -191,7 +191,11 @@ export default function TestsView() {
           <button
             onClick={() => handleLaunch('card-full-mock', () => launchAiDynamicTest('Full Syllabus Mock', 'All Subjects', questionCount, selectedDifficulty))}
             disabled={isAiGenerating}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+            className={`w-full text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 ${
+              activeCardId === 'card-full-mock'
+                ? 'bg-blue-400 opacity-60 cursor-wait'
+                : 'bg-blue-600 hover:bg-blue-700 cursor-pointer active:scale-95'
+            }`}
           >
             {activeCardId === 'card-full-mock' ? (
               <>
@@ -223,7 +227,11 @@ export default function TestsView() {
           <button
             onClick={() => handleLaunch('card-current-affairs', () => launchAiDynamicTest('Daily Current Affairs & Polity', 'General Awareness & GS', questionCount, selectedDifficulty))}
             disabled={isAiGenerating}
-            className="w-full bg-slate-900 hover:bg-black text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+            className={`w-full text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 ${
+              activeCardId === 'card-current-affairs'
+                ? 'bg-slate-500 opacity-60 cursor-wait'
+                : 'bg-slate-900 hover:bg-black cursor-pointer active:scale-95'
+            }`}
           >
             {activeCardId === 'card-current-affairs' ? (
               <>
@@ -255,7 +263,11 @@ export default function TestsView() {
           <button
             onClick={() => handleLaunch('card-weak-area', () => launchAiDynamicTest('High Difficulty Yield & Weak Areas', 'Quantitative Aptitude', questionCount, selectedDifficulty))}
             disabled={isAiGenerating}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+            className={`w-full text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 ${
+              activeCardId === 'card-weak-area'
+                ? 'bg-emerald-400 opacity-60 cursor-wait'
+                : 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer active:scale-95'
+            }`}
           >
             {activeCardId === 'card-weak-area' ? (
               <>

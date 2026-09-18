@@ -468,7 +468,7 @@ export default function LiveExamInterface() {
             {/* Digital Countdown Timer Widget */}
             <div className={`rounded-2xl p-4 border text-center transition-all ${
               isTimerBlinking
-                ? 'animate-timer-alert font-bold shadow-2xl border-4'
+                ? 'animate-timer-pulse-red-white font-bold shadow-2xl border-4'
                 : 'bg-slate-900 text-white border-slate-800'
             }`}>
               <div className="flex items-center justify-center space-x-1.5 text-xs font-semibold mb-1">

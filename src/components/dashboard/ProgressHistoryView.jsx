@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { jsPDF } from 'jspdf';
-import { useApp } from '../../context/AppContext';
+import { useApp, deduplicateAttemptHistory } from '../../context/AppContext';
 import { 
   History, 
   Award, 
@@ -31,7 +31,7 @@ export default function ProgressHistoryView() {
   const itemsPerPage = 10;
   const [questionCount] = useState(5);
 
-  const history = user?.attemptsHistory || [];
+  const history = deduplicateAttemptHistory(user?.attemptsHistory || []);
 
   // Helper to format date as "16 Sept 2026" (Day First, then Month, then Year)
   const formatDisplayDate = (dateStr) => {

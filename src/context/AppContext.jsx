@@ -8,6 +8,13 @@ const USER_STORAGE_KEY = 'examiq_active_user_session';
 const ADMIN_TIME_SETTINGS_KEY = 'examiq_admin_time_settings';
 const ADMIN_EXAM_DATES_KEY = 'examiq_admin_exam_dates';
 
+export const DEFAULT_DAILY_CHECKLIST = [
+  { id: 1, text: "Attempt 1 Full Mock Test", completed: false },
+  { id: 2, text: "Revise Daily Current Affairs", completed: false },
+  { id: 3, text: "Solve 20 Quant Pipes & Cisterns Questions", completed: false },
+  { id: 4, text: "Review Negative Markings from Mock", completed: false }
+];
+
 export const DEFAULT_ADMIN_TIME_SETTINGS = {
   customCounts: {
     5: 5,     // 5 minutes for 5 questions
@@ -65,6 +72,24 @@ export const getDaysRemainingForExam = (examIdOrName, adminDatesMap = {}) => {
   } catch (e) {
     return 30;
   }
+};
+
+// Helper function to deduplicate attempt history by unique ID
+export const deduplicateAttemptHistory = (historyList = []) => {
+  if (!Array.isArray(historyList)) return [];
+  const seenId = new Set();
+  const result = [];
+
+  for (const item of historyList) {
+    if (!item) continue;
+    const itemId = item.id || item.attempt_id || item.attemptId;
+    if (itemId) {
+      if (seenId.has(itemId)) continue;
+      seenId.add(itemId);
+    }
+    result.push(item);
+  }
+  return result;
 };
 
 // Helper function to calculate exact 100% real dynamic subject accuracy across all historical attempt logs
@@ -243,8 +268,12 @@ export function AppProvider({ children }) {
       if (savedUser) {
         const parsedUser = JSON.parse(savedUser);
         const dynamicSubjectAcc = computeDynamicSubjectAccuracy(parsedUser.attemptsHistory || []);
+        const rawChecklist = parsedUser.dailyChecklist;
+        const activeChecklist = Array.isArray(rawChecklist) && rawChecklist.length > 0 ? rawChecklist : DEFAULT_DAILY_CHECKLIST;
+        
         const activeUserWithCleanAcc = {
           ...parsedUser,
+          dailyChecklist: activeChecklist,
           subjectAccuracy: dynamicSubjectAcc
         };
         setUser(activeUserWithCleanAcc);
@@ -264,13 +293,11 @@ export function AppProvider({ children }) {
                 const dbHistory = Array.isArray(dbUser.attempts_history) ? dbUser.attempts_history : [];
                 const localHistory = Array.isArray(parsedUser.attemptsHistory) ? parsedUser.attemptsHistory : [];
                 
-                const combinedMap = new Map();
-                [...localHistory, ...dbHistory].forEach((item) => {
-                  if (item && item.id) combinedMap.set(item.id, item);
-                });
-
-                const mergedHistory = Array.from(combinedMap.values()).sort((a, b) => String(b.id || '').localeCompare(String(a.id || '')));
+                const mergedHistory = deduplicateAttemptHistory([...localHistory, ...dbHistory]).sort((a, b) => String(b.id || b.attempt_id || '').localeCompare(String(a.id || a.attempt_id || '')));
                 const computedMergedSubjectAcc = computeDynamicSubjectAccuracy(mergedHistory);
+
+                const dbChecklist = Array.isArray(dbUser.daily_checklist) ? dbUser.daily_checklist : [];
+                const mergedChecklist = dbChecklist.length > 0 ? dbChecklist : (activeChecklist.length > 0 ? activeChecklist : DEFAULT_DAILY_CHECKLIST);
 
                 const mergedUser = {
                   ...parsedUser,
@@ -281,7 +308,8 @@ export function AppProvider({ children }) {
                   testsAttempted: Math.max(mergedHistory.length, dbUser.tests_attempted || 0, parsedUser.testsAttempted || 0),
                   avgAccuracy: dbUser.avg_accuracy || parsedUser.avgAccuracy,
                   attemptsHistory: mergedHistory,
-                  subjectAccuracy: computedMergedSubjectAcc
+                  subjectAccuracy: computedMergedSubjectAcc,
+                  dailyChecklist: mergedChecklist
                 };
 
                 setUser(mergedUser);
@@ -330,6 +358,9 @@ export function AppProvider({ children }) {
     const targetExamName = userData.targetExamName || userData.target_exam_name || 'SSC CGL (Combined Graduate Level)';
     const computedDays = getDaysRemainingForExam(targetExamId, adminExamDates);
 
+    const rawChecklist = parseJson(userData.dailyChecklist ?? userData.daily_checklist, []);
+    const userChecklist = Array.isArray(rawChecklist) && rawChecklist.length > 0 ? rawChecklist : DEFAULT_DAILY_CHECKLIST;
+
     const fullProfile = {
       id: userData.id || userData.email || `usr_${Date.now()}`,
       name: userData.name || 'Aspirant Student',
@@ -347,12 +378,7 @@ export function AppProvider({ children }) {
       avgAccuracy: userData.avgAccuracy ?? userData.avg_accuracy ?? 0,
       attemptsHistory: parseJson(userData.attemptsHistory ?? userData.attempts_history, []),
       subjectAccuracy: computeDynamicSubjectAccuracy(parseJson(userData.attemptsHistory ?? userData.attempts_history, [])),
-      dailyChecklist: parseJson(userData.dailyChecklist ?? userData.daily_checklist, [
-        { id: 1, text: "Attempt 1 Full Mock Test", completed: false },
-        { id: 2, text: "Revise Daily Current Affairs", completed: false },
-        { id: 3, text: "Solve 20 Quant Pipes & Cisterns Questions", completed: false },
-        { id: 4, text: "Review Negative Markings from Mock", completed: false }
-      ])
+      dailyChecklist: userChecklist
     };
     saveUserSession(fullProfile);
     if (fullProfile.role === 'admin') {
@@ -380,11 +406,6 @@ export function AppProvider({ children }) {
           if (prev <= 1) {
             clearInterval(timerInterval);
             setIsTimerRunning(false);
-            try {
-              submitTestFinal(null, 'time_expired');
-            } catch (e) {
-              console.error('Auto submit time_expired error:', e);
-            }
             return 0;
           }
           return prev - 1;
@@ -413,7 +434,11 @@ export function AppProvider({ children }) {
 
   const toggleChecklistItem = (itemId) => {
     if (!user) return;
-    const updatedChecklist = user.dailyChecklist.map((item) =>
+    const currentList = Array.isArray(user.dailyChecklist) && user.dailyChecklist.length > 0 
+      ? user.dailyChecklist 
+      : DEFAULT_DAILY_CHECKLIST;
+
+    const updatedChecklist = currentList.map((item) =>
       item.id === itemId ? { ...item, completed: !item.completed } : item
     );
     const updatedUser = { ...user, dailyChecklist: updatedChecklist };
@@ -620,8 +645,8 @@ export function AppProvider({ children }) {
       const isNewDay = user.lastActiveDate !== todayDate;
       const updatedStreak = isNewDay ? user.streakDays + 1 : user.streakDays;
 
-      const newHistory = [resultSummary, ...(user.attemptsHistory || [])];
-      const newTestsAttempted = user.testsAttempted + 1;
+      const newHistory = deduplicateAttemptHistory([resultSummary, ...(user.attemptsHistory || [])]);
+      const newTestsAttempted = newHistory.length;
 
       const sumAccuracy = newHistory.reduce((acc, item) => acc + item.accuracy, 0);
       const newAvgAccuracy = parseFloat((sumAccuracy / newHistory.length).toFixed(1));

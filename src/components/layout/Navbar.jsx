@@ -54,18 +54,6 @@ export default function Navbar() {
                 </div>
               </div>
             </button>
-
-            {/* Target Exam Switcher Pill */}
-            <button
-              onClick={() => setShowOnboardingModal(true)}
-              className="hidden lg:flex items-center space-x-1.5 bg-slate-100 hover:bg-blue-50 text-slate-800 hover:text-blue-700 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-slate-200 hover:border-blue-300 transition-all cursor-pointer"
-              title="Click to change target exam"
-            >
-              <Target className="w-3 h-3 text-blue-600" />
-              <span>Target: <strong className="text-blue-700">{user.targetExamName}</strong></span>
-              <span className="bg-blue-600 text-white text-[9px] px-1.5 py-0.1 rounded-full font-bold">{liveDaysRemaining}d</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
-            </button>
           </div>
 
           {/* 4 Navigation Items */}

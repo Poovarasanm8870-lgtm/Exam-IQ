@@ -84,6 +84,13 @@ GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
 PORT = int(os.environ.get('PORT', 8000))
 DB_PATH = os.path.join(os.path.dirname(__file__), 'exam_platform.db')
 
+DEFAULT_DAILY_CHECKLIST = [
+    {"id": 1, "text": "Attempt 1 Full Mock Test", "completed": False},
+    {"id": 2, "text": "Revise Daily Current Affairs", "completed": False},
+    {"id": 3, "text": "Solve 20 Quant Pipes & Cisterns Questions", "completed": False},
+    {"id": 4, "text": "Review Negative Markings from Mock", "completed": False}
+]
+
 def get_performance_grade_and_feedback(accuracy):
     acc = float(accuracy or 0)
     if acc >= 90:
@@ -693,7 +700,8 @@ class ExamBackendHandler(BaseHTTPRequestHandler):
             if row:
                 u = dict(row)
                 u['attempts_history'] = json.loads(u['attempts_history'] or '[]')
-                u['daily_checklist'] = json.loads(u['daily_checklist'] or '[]')
+                parsed_ch = json.loads(u['daily_checklist'] or '[]')
+                u['daily_checklist'] = parsed_ch if (isinstance(parsed_ch, list) and len(parsed_ch) > 0) else DEFAULT_DAILY_CHECKLIST
                 u['subject_accuracy'] = json.loads(u['subject_accuracy'] or '{}')
                 self._set_headers(200)
                 self.wfile.write(json.dumps({"status": "success", "user": u}).encode('utf-8'))
@@ -1044,7 +1052,8 @@ Return strict JSON matching this structure without markdown wraps:
             attempts_history = json.dumps(raw_history if isinstance(raw_history, list) else json.loads(raw_history or '[]'))
 
             raw_checklist = body.get('dailyChecklist', body.get('daily_checklist', []))
-            daily_checklist = json.dumps(raw_checklist if isinstance(raw_checklist, list) else json.loads(raw_checklist or '[]'))
+            parsed_raw = raw_checklist if isinstance(raw_checklist, list) else (json.loads(raw_checklist or '[]') if isinstance(raw_checklist, str) else [])
+            daily_checklist = json.dumps(parsed_raw if (isinstance(parsed_raw, list) and len(parsed_raw) > 0) else DEFAULT_DAILY_CHECKLIST)
 
             raw_subj = body.get('subjectAccuracy', body.get('subject_accuracy', {}))
             subject_accuracy = json.dumps(raw_subj if isinstance(raw_subj, dict) else json.loads(raw_subj or '{}'))
