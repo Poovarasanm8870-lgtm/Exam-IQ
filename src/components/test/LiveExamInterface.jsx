@@ -415,7 +415,7 @@ export default function LiveExamInterface() {
             <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
               <button
                 onClick={handleMarkForReviewAndNext}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-md shadow-purple-500/20 transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl border border-indigo-600 transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95"
               >
                 <Bookmark className="w-3.5 h-3.5 shrink-0" />
                 <span>Mark for Review & Next</span>
@@ -423,7 +423,7 @@ export default function LiveExamInterface() {
 
               <button
                 onClick={() => clearResponse(currentQ.id)}
-                className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-xs transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95"
+                className="bg-slate-600 hover:bg-slate-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl border border-slate-600 transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95"
               >
                 <RotateCcw className="w-3.5 h-3.5 shrink-0" />
                 <span>Clear Response</span>
@@ -435,7 +435,7 @@ export default function LiveExamInterface() {
               <button
                 onClick={() => jumpToQuestion(Math.max(0, currentQuestionIndex - 1))}
                 disabled={currentQuestionIndex === 0}
-                className="bg-slate-700 hover:bg-slate-800 text-white disabled:bg-slate-300 disabled:opacity-50 text-xs font-bold py-2.5 px-4 rounded-xl transition-all flex items-center space-x-1 cursor-pointer disabled:cursor-not-allowed active:scale-95"
+                className="bg-slate-600 hover:bg-slate-700 text-white disabled:bg-slate-200 disabled:text-slate-400 border border-slate-600 disabled:border-slate-200 text-xs font-bold py-2.5 px-4 rounded-xl transition-all flex items-center space-x-1 cursor-pointer disabled:cursor-not-allowed active:scale-95"
               >
                 <ChevronLeft className="w-4 h-4 shrink-0" />
                 <span>Previous</span>
@@ -443,7 +443,7 @@ export default function LiveExamInterface() {
 
               <button
                 onClick={handleSaveAndNext}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold py-2.5 px-5 rounded-xl shadow-md shadow-blue-600/25 transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 px-5 rounded-xl border border-blue-600 transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95"
               >
                 <span>Save & Next</span>
                 <ChevronRight className="w-4 h-4 shrink-0" />
@@ -493,7 +493,7 @@ export default function LiveExamInterface() {
                 <span>Time Remaining</span>
               </div>
 
-              <div className="text-3xl sm:text-4xl font-black tracking-widest font-mono font-outfit my-2">
+              <div className="text-fluid-timer font-black tracking-widest font-mono font-outfit my-2">
                 {formatTime(displayTimeSeconds)}
               </div>
             </div>
@@ -581,7 +581,7 @@ export default function LiveExamInterface() {
           <div className="pt-4 border-t border-slate-200 mt-4">
             <button
               onClick={() => setShowSubmitModal('manual')}
-              className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black py-3.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer active:scale-95"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-xs transition-all cursor-pointer active:scale-95"
             >
               <Send className="w-4 h-4" />
               <span>Submit Test</span>
@@ -834,47 +834,59 @@ export default function LiveExamInterface() {
       {/* PRE-TEST COMPREHENSIVE PROCTORING & REPORT PROTOCOL MODAL */}
       {showStartWarningModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-          <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border-2 border-amber-400 overflow-hidden p-6 sm:p-7 space-y-5 animate-scaleUp">
+          <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border-2 border-amber-400 p-5 sm:p-6 space-y-3.5 animate-scaleUp relative">
             
+            {/* Top Right Close (X) Button */}
+            <button
+              onClick={() => {
+                setShowStartWarningModal(false);
+                setCurrentView('dashboard');
+              }}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-1.5 rounded-full transition-colors cursor-pointer"
+              title="Close & Return to Dashboard"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
             {/* Header Alert Banner */}
-            <div className="flex items-start space-x-3 text-amber-950 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 p-4 rounded-2xl border border-amber-300">
-              <div className="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-md font-bold">
-                <ShieldAlert className="w-6 h-6 text-slate-950" />
+            <div className="flex items-center space-x-3 text-amber-950 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 p-3.5 rounded-2xl border border-amber-300 pr-10">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-md font-bold">
+                <ShieldAlert className="w-5 h-5 text-slate-950" />
               </div>
               <div>
-                <span className="text-[10px] font-extrabold text-amber-900 uppercase tracking-widest bg-amber-200/80 px-2 py-0.5 rounded-md border border-amber-400">
+                <span className="text-[9px] font-extrabold text-amber-900 uppercase tracking-widest bg-amber-200/80 px-2 py-0.5 rounded-md border border-amber-400">
                   NTA TCS-iON Examination Instructions
                 </span>
-                <h3 className="text-lg font-black text-amber-950 font-outfit mt-0.5">
-                  ⚠️ Pre-Test Instructions & Report Guidelines
+                <h3 className="text-base font-black text-amber-950 font-outfit mt-0.5">
+                  ⚠️ Pre-Test Instructions & Guidelines
                 </h3>
               </div>
             </div>
 
-            {/* Comprehensive Guidelines List */}
-            <div className="space-y-3.5 text-xs text-slate-700">
-              <p className="font-bold text-slate-900">
-                Please review your exam guidelines and report settings before beginning:
+            {/* Guidelines List */}
+            <div className="space-y-2 text-[11px] text-slate-700">
+              <p className="font-bold text-slate-900 text-xs">
+                Please review your exam guidelines before beginning:
               </p>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {/* Rule 1: Single Tab */}
-                <div className="flex items-start space-x-2.5 bg-red-50/70 p-3 rounded-2xl border border-red-200 text-red-900 font-medium">
+                <div className="flex items-start space-x-2.5 bg-red-50/70 p-2.5 rounded-2xl border border-red-200 text-red-900 font-medium">
                   <ShieldAlert className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-red-950 font-bold block">1. Single-Tab Proctoring Enforced</strong>
-                    <span>You must remain on this test window throughout the exam. Switching browser tabs or opening another window will <strong className="text-red-700 font-extrabold underline">IMMEDIATELY auto-submit</strong> your live test.</span>
+                    <strong className="text-red-950 font-bold block text-xs">1. Single-Tab Proctoring Enforced</strong>
+                    <span>Switching browser tabs or focus will <strong className="text-red-700 font-extrabold underline">IMMEDIATELY auto-submit</strong> your live test.</span>
                   </div>
                 </div>
 
                 {/* Rule 2: Email Report */}
-                <div className="flex items-start space-x-2.5 bg-blue-50/80 p-3 rounded-2xl border border-blue-200 text-blue-950 font-medium">
+                <div className="flex items-start space-x-2.5 bg-blue-50/80 p-2.5 rounded-2xl border border-blue-200 text-blue-950 font-medium">
                   <Mail className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-blue-900 font-bold block">2. Automated Performance Email Report</strong>
-                    <span>Upon test submission (or auto-submission), an official scorecard with accuracy metrics and answer solutions will be automatically dispatched to:</span>
-                    <div className="mt-1.5 flex items-center space-x-2">
-                      <span className="text-[11px] font-bold text-blue-800 bg-white px-2.5 py-1 rounded-lg border border-blue-300 truncate max-w-[280px]">
+                    <strong className="text-blue-900 font-bold block text-xs">2. Automated Email Performance Report</strong>
+                    <span>Official scorecard & solutions will be automatically sent upon completion to:</span>
+                    <div className="mt-1">
+                      <span className="inline-block text-[10px] font-bold text-blue-800 bg-white px-2 py-0.5 rounded-lg border border-blue-300 truncate max-w-[260px]">
                         📧 {candidateEmail || user?.email || 'aspirant@examiq.com'}
                       </span>
                     </div>
@@ -882,11 +894,11 @@ export default function LiveExamInterface() {
                 </div>
 
                 {/* Rule 3: PDF Download in History */}
-                <div className="flex items-start space-x-2.5 bg-emerald-50/80 p-3 rounded-2xl border border-emerald-200 text-emerald-950 font-medium">
+                <div className="flex items-start space-x-2.5 bg-emerald-50/80 p-2.5 rounded-2xl border border-emerald-200 text-emerald-950 font-medium">
                   <FileText className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-emerald-900 font-bold block">3. Permanent History & Downloadable PDF Solutions</strong>
-                    <span>All test attempt records are permanently saved to your database. You can review solutions and <strong className="text-emerald-900 font-extrabold">download your complete test paper in PDF format</strong> anytime from the <em className="not-italic font-bold text-emerald-800">My Progress / History</em> tab.</span>
+                    <strong className="text-emerald-900 font-bold block text-xs">3. Permanent History & PDF Download</strong>
+                    <span>All test attempts are saved. You can download your test paper in PDF format anytime in <em className="not-italic font-bold text-emerald-800">My Progress / History</em>.</span>
                   </div>
                 </div>
               </div>
@@ -901,9 +913,9 @@ export default function LiveExamInterface() {
                   triggerToast('🛡️ Single-Tab Proctoring Active: Good luck with your exam!', 'info');
                 }
               }}
-              className="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-blue-600/30 transition-all text-xs flex items-center justify-center space-x-2 cursor-pointer"
+              className="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold py-3 px-5 rounded-2xl shadow-lg shadow-blue-600/30 transition-all text-xs flex items-center justify-center space-x-2 cursor-pointer mt-1"
             >
-              <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
               <span>I Understand & Agree to Start Test Session</span>
             </button>
 

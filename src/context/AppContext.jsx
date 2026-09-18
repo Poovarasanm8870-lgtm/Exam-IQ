@@ -74,38 +74,48 @@ export const getDaysRemainingForExam = (examIdOrName, adminDatesMap = {}) => {
   }
 };
 
-// Helper function to deduplicate attempt history by unique ID and 5-minute duplicate event window per test title
+// Helper function to deduplicate attempt history by unique ID, session ID, and 10-second duplicate trigger window per test title
 export const deduplicateAttemptHistory = (historyList = []) => {
   if (!Array.isArray(historyList)) return [];
   const seenId = new Set();
-  const seenTitleDateMap = new Map(); // title_date -> timestamp
+  const seenSessionId = new Set();
+  const seenKeyTimeMap = new Map();
   const result = [];
 
   for (const item of historyList) {
     if (!item) continue;
     const itemId = item.id || item.attempt_id || item.attemptId;
+    const sessionId = item.sessionId || item.session_id || itemId;
+
     if (itemId && seenId.has(itemId)) continue;
+    if (sessionId && seenSessionId.has(sessionId)) continue;
 
     const rawTitle = item.testTitle || item.test_title || 'Practice Test Session';
     const title = String(rawTitle).replace(/\s*\(\d+\s*Questions\)/i, '').trim();
     const date = item.date || item.date_str || new Date().toISOString().split('T')[0];
+    const score = item.score ?? 0;
 
     let itemTs = 0;
     if (itemId && String(itemId).startsWith('attempt_')) {
       const parsed = parseInt(String(itemId).replace('attempt_', ''), 10);
       if (!isNaN(parsed) && parsed > 0) itemTs = parsed;
+    } else if (sessionId && String(sessionId).startsWith('session_')) {
+      const parsed = parseInt(String(sessionId).replace('session_', ''), 10);
+      if (!isNaN(parsed) && parsed > 0) itemTs = parsed;
     }
 
-    const titleDateKey = `${title}_${date}`;
-    const lastTs = seenTitleDateMap.get(titleDateKey);
+    const titleDateKey = `${title}_${date}_${score}`;
+    const lastTs = seenKeyTimeMap.get(titleDateKey);
 
-    if (lastTs && itemTs > 0 && Math.abs(lastTs - itemTs) < 300000) {
+    // Only filter out duplicate triggers within 10 seconds for identical title + score
+    if (lastTs && itemTs > 0 && Math.abs(lastTs - itemTs) < 10000) {
       continue;
     }
 
     if (itemId) seenId.add(itemId);
-    if (itemTs > 0) seenTitleDateMap.set(titleDateKey, itemTs);
-    else seenTitleDateMap.set(titleDateKey, Date.now());
+    if (sessionId) seenSessionId.add(sessionId);
+    if (itemTs > 0) seenKeyTimeMap.set(titleDateKey, itemTs);
+    else seenKeyTimeMap.set(titleDateKey, Date.now());
 
     result.push(item);
   }
@@ -257,6 +267,7 @@ export function AppProvider({ children }) {
   const [testQuestions, setTestQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [activeSectionId, setActiveSectionId] = useState('quant');
+  const [activeSessionId, setActiveSessionId] = useState(null);
 
   const [questionStates, setQuestionStates] = useState({});
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -485,6 +496,8 @@ export function AppProvider({ children }) {
       }
     });
 
+    const newSessionToken = `session_${Date.now()}`;
+    setActiveSessionId(newSessionToken);
     setTestQuestions(questionsToUse);
     setQuestionStates(initialStates);
     setSelectedAnswers(initialAnswers);
@@ -639,8 +652,10 @@ export function AppProvider({ children }) {
       };
     });
 
+    const sessionToken = activeSessionId || `session_${Date.now()}`;
     const resultSummary = {
       id: `attempt_${Date.now()}`,
+      sessionId: sessionToken,
       testTitle: activeTest.title,
       submissionMethod, // 'manual' | 'time_expired' | 'tab_switch'
       recipientEmail: recipientEmail || user?.email || 'aspirant@examiq.com',

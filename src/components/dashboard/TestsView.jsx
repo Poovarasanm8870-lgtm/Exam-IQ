@@ -191,7 +191,7 @@ export default function TestsView() {
           <button
             onClick={() => handleLaunch('card-full-mock', () => launchAiDynamicTest('Full Syllabus Mock', 'All Subjects', questionCount, selectedDifficulty))}
             disabled={isAiGenerating}
-            className={`w-full text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 ${
+            className={`w-full text-white font-bold h-12 px-3 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 shrink-0 ${
               activeCardId === 'card-full-mock'
                 ? 'bg-blue-400 opacity-60 cursor-wait'
                 : 'bg-blue-600 hover:bg-blue-700 cursor-pointer active:scale-95'
@@ -200,12 +200,12 @@ export default function TestsView() {
             {activeCardId === 'card-full-mock' ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Generating {questionCount} AI Qs...</span>
+                <span className="whitespace-nowrap">Generating {questionCount} AI Qs...</span>
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 fill-white" />
-                <span>Start AI Full Mock ({questionCount} Qs • {selectedDifficulty})</span>
+                <Play className="w-4 h-4 fill-white shrink-0" />
+                <span className="whitespace-nowrap truncate">Start AI Full Mock ({questionCount} Qs • {selectedDifficulty})</span>
               </>
             )}
           </button>
@@ -227,7 +227,7 @@ export default function TestsView() {
           <button
             onClick={() => handleLaunch('card-current-affairs', () => launchAiDynamicTest('Daily Current Affairs & Polity', 'General Awareness & GS', questionCount, selectedDifficulty))}
             disabled={isAiGenerating}
-            className={`w-full text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 ${
+            className={`w-full text-white font-bold h-12 px-3 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 shrink-0 ${
               activeCardId === 'card-current-affairs'
                 ? 'bg-slate-500 opacity-60 cursor-wait'
                 : 'bg-slate-900 hover:bg-black cursor-pointer active:scale-95'
@@ -236,12 +236,12 @@ export default function TestsView() {
             {activeCardId === 'card-current-affairs' ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Generating {questionCount} AI Qs...</span>
+                <span className="whitespace-nowrap">Generating {questionCount} AI Qs...</span>
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 fill-white" />
-                <span>Launch Current Affairs Quiz ({questionCount} Qs • {selectedDifficulty})</span>
+                <Play className="w-4 h-4 fill-white shrink-0" />
+                <span className="whitespace-nowrap truncate">Start Current Affairs ({questionCount} Qs • {selectedDifficulty})</span>
               </>
             )}
           </button>
@@ -263,7 +263,7 @@ export default function TestsView() {
           <button
             onClick={() => handleLaunch('card-weak-area', () => launchAiDynamicTest('High Difficulty Yield & Weak Areas', 'Quantitative Aptitude', questionCount, selectedDifficulty))}
             disabled={isAiGenerating}
-            className={`w-full text-white font-bold py-3 px-4 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 ${
+            className={`w-full text-white font-bold h-12 px-3 rounded-xl shadow-xs transition-all text-xs flex items-center justify-center space-x-2 shrink-0 ${
               activeCardId === 'card-weak-area'
                 ? 'bg-emerald-400 opacity-60 cursor-wait'
                 : 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer active:scale-95'
@@ -272,12 +272,12 @@ export default function TestsView() {
             {activeCardId === 'card-weak-area' ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Generating {questionCount} AI Qs...</span>
+                <span className="whitespace-nowrap">Generating {questionCount} AI Qs...</span>
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 fill-white" />
-                <span>Start Weak Area Quiz ({questionCount} Qs • {selectedDifficulty})</span>
+                <Play className="w-4 h-4 fill-white shrink-0" />
+                <span className="whitespace-nowrap truncate">Start Weak Area Quiz ({questionCount} Qs • {selectedDifficulty})</span>
               </>
             )}
           </button>

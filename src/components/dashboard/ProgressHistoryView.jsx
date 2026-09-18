@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useApp, deduplicateAttemptHistory } from '../../context/AppContext';
 import { 
   History, 
@@ -31,7 +32,7 @@ export default function ProgressHistoryView() {
   const itemsPerPage = 10;
   const [questionCount] = useState(5);
 
-  const history = deduplicateAttemptHistory(user?.attemptsHistory || []);
+  const history = useMemo(() => deduplicateAttemptHistory(user?.attemptsHistory || []), [user?.attemptsHistory]);
 
   // Helper to format date as "16 Sept 2026" (Day First, then Month, then Year)
   const formatDisplayDate = (dateStr) => {
@@ -60,29 +61,31 @@ export default function ProgressHistoryView() {
   };
 
   // Filter history items by search query and date filter
-  const filteredHistory = history.filter((item) => {
-    // 1. Text Search Filter
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      const title = cleanTestTitle(item.testTitle).toLowerCase();
-      const formattedDate = formatDisplayDate(item.date).toLowerCase();
-      const matchesSearch = (
-        title.includes(q) ||
-        formattedDate.includes(q) ||
-        item.date?.toLowerCase().includes(q) ||
-        String(item.score).includes(q) ||
-        String(item.accuracy).includes(q)
-      );
-      if (!matchesSearch) return false;
-    }
+  const filteredHistory = useMemo(() => {
+    return history.filter((item) => {
+      // 1. Text Search Filter
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const title = cleanTestTitle(item.testTitle).toLowerCase();
+        const formattedDate = formatDisplayDate(item.date).toLowerCase();
+        const matchesSearch = (
+          title.includes(q) ||
+          formattedDate.includes(q) ||
+          item.date?.toLowerCase().includes(q) ||
+          String(item.score).includes(q) ||
+          String(item.accuracy).includes(q)
+        );
+        if (!matchesSearch) return false;
+      }
 
-    // 2. Exact Date Filter (YYYY-MM-DD input match)
-    if (selectedDateFilter) {
-      if (item.date !== selectedDateFilter) return false;
-    }
+      // 2. Exact Date Filter (YYYY-MM-DD input match)
+      if (selectedDateFilter) {
+        if (item.date !== selectedDateFilter) return false;
+      }
 
-    return true;
-  });
+      return true;
+    });
+  }, [history, searchQuery, selectedDateFilter]);
 
   // Pagination Logic (10 items per page)
   const totalPages = Math.ceil(filteredHistory.length / itemsPerPage) || 1;
@@ -143,168 +146,132 @@ export default function ProgressHistoryView() {
     ];
   };
 
-  // Download Test Paper Directly as a Genuine Binary PDF Document
+  // Download Test Paper Directly in Vector PDF Format (Fast & No Black Line Errors)
   const handleDownloadTestPaperPDF = (item) => {
     if (!item) return;
 
-    // Helper to replace unicode characters unsupported by standard jsPDF fonts
-    const sanitizePDFText = (str) => {
-      if (!str) return '';
-      return String(str)
-        .replace(/\u00A0/g, ' ')
-        .replace(/₹/g, 'Rs. ')
-        .replace(/’/g, "'")
-        .replace(/‘/g, "'")
-        .replace(/“/g, '"')
-        .replace(/”/g, '"')
-        .replace(/–/g, '-')
-        .replace(/—/g, '-')
-        .replace(/\s+/g, ' ')
-        .trim();
-    };
-
-    const qList = getQuestionBreakdown(item);
-    const displayTitle = sanitizePDFText(cleanTestTitle(item.testTitle));
-    const displayDate = sanitizePDFText(formatDisplayDate(item.date));
-    const examShortName = (user?.targetExamName || 'SSC CGL').split(' ')[0] || 'SSC_CGL';
-    const fullExamName = user?.targetExamName ? user.targetExamName.replace(/\([^)]*\)/g, '').trim() : 'Competitive Exam';
-    const simpleHeading = `${fullExamName} - Performance & Solution Audit`;
-    const pdfFileName = `${examShortName}_Test_Report.pdf`;
-
     try {
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+      const examShortName = (user?.targetExamName || 'SSC_CGL').split(' ')[0] || 'SSC_CGL';
+      const pdfFileName = `${examShortName}_Test_Report.pdf`;
 
+      const qList = getQuestionBreakdown(item);
+      const displayTitle = cleanTestTitle(item.testTitle);
+      const displayDate = formatDisplayDate(item.date);
+      const candidateName = user?.name || 'Aspirant Student';
+      const candidateEmailStr = user?.email || 'aspirant@examiq.com';
+
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pageWidth = doc.internal.pageSize.getWidth();
-      const maxTextWidth = 168; // 168mm width fits comfortably within X=19 to X=187
+      const maxTextWidth = 168; // Fits within margins 14mm to 196mm
       let y = 14;
 
-      // 1. ELEGANT BLUE BANNER HEADER
-      doc.setFillColor(30, 58, 138); // Dark Royal Navy Blue
-      doc.roundedRect(14, y, pageWidth - 28, 15, 2, 2, 'F');
+      const sanitize = (str) => {
+        if (!str) return '';
+        return String(str)
+          .replace(/\u00A0/g, ' ')
+          .replace(/₹/g, 'Rs. ')
+          .replace(/’/g, "'")
+          .replace(/‘/g, "'")
+          .replace(/“/g, '"')
+          .replace(/”/g, '"')
+          .replace(/–/g, '-')
+          .replace(/—/g, '-')
+          .replace(/\s+/g, ' ')
+          .trim();
+      };
 
+      // 1. Banner Header (Exam Name / Topic & Candidate Info)
+      doc.setFillColor(30, 58, 138);
+      doc.roundedRect(14, y, pageWidth - 28, 18, 2, 2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11.5);
+      doc.setFontSize(11);
       doc.setTextColor(255, 255, 255);
-      doc.text(sanitizePDFText(simpleHeading), 18, y + 9.5);
-
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(224, 231, 255);
-      doc.text('EXAMIQ TEST REPORT', pageWidth - 18, y + 9.5, { align: 'right' });
-      
-      y += 19;
-
-      // 2. CANDIDATE METADATA GRID BOX
-      doc.setFillColor(248, 250, 252);
-      doc.setDrawColor(226, 232, 240);
-      doc.roundedRect(14, y, pageWidth - 28, 26, 3, 3, 'FD');
-
+      doc.text(sanitize(displayTitle), 18, y + 7.5);
       doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(219, 234, 254);
+      doc.text(sanitize(`Candidate: ${candidateName} (${candidateEmailStr})  |  Date: ${displayDate}`), 18, y + 13.5);
+      y += 22;
 
-      // Left Column
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(100, 116, 139);
-      doc.text('CANDIDATE NAME:', 18, y + 8);
-      doc.setTextColor(15, 23, 42);
-      doc.text(sanitizePDFText(user?.name || 'Aspirant Student'), 52, y + 8);
+      // 2. Proctoring Violation Banner (If applicable)
+      if (item.submissionMethod === 'tab_switch') {
+        doc.setFillColor(254, 242, 242);
+        doc.setDrawColor(254, 202, 202);
+        doc.roundedRect(14, y, pageWidth - 28, 14, 2, 2, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(153, 27, 27);
+        doc.text('🚨 AUTO-SUBMITTED VIA SINGLE-TAB PROCTORING VIOLATION', 18, y + 6);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text('This session was auto-submitted because tab switch or window focus loss was detected.', 18, y + 10.5);
+        y += 18;
+      }
 
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(100, 116, 139);
-      doc.text('ATTEMPT DATE:', 18, y + 17);
-      doc.setTextColor(15, 23, 42);
-      doc.text(displayDate, 52, y + 17);
-
-      // Right Column
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(100, 116, 139);
-      doc.text('EMAIL ADDRESS:', 105, y + 8);
-      doc.setTextColor(15, 23, 42);
-      const safeEmail = sanitizePDFText(user?.email || 'aspirant@examiq.com');
-      const emailLines = doc.splitTextToSize(safeEmail, 55);
-      doc.text(emailLines[0], 135, y + 8);
-
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(100, 116, 139);
-      doc.text('TEST TITLE:', 105, y + 17);
-      doc.setTextColor(15, 23, 42);
-      const titleLines = doc.splitTextToSize(displayTitle, 55);
-      doc.text(titleLines[0] + (titleLines.length > 1 ? '...' : ''), 130, y + 17);
-
-      y += 31;
-
-      // 3. SCORECARD SUMMARY BOX
+      // 3. Scorecard Summary Card
       doc.setFillColor(239, 246, 255);
       doc.setDrawColor(191, 219, 254);
-      doc.roundedRect(14, y, pageWidth - 28, 16, 3, 3, 'FD');
-
-      doc.setFontSize(10.5);
+      doc.roundedRect(14, y, pageWidth - 28, 15, 2.5, 2.5, 'FD');
+      doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(29, 78, 216);
-      doc.text(`SCORE: ${item.score} / ${item.maxScore} MARKS`, 18, y + 10.5);
-
+      doc.text(`SCORE ACHIEVED: ${item.score} / ${item.maxScore || (qList.length * 2)} MARKS`, 18, y + 9.5);
       doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
       doc.setTextColor(22, 163, 74);
-      doc.text(`Accuracy: ${item.accuracy}%`, 110, y + 10.5);
+      doc.text(`Accuracy: ${item.accuracy}%`, 115, y + 9.5);
       doc.setTextColor(37, 99, 235);
-      doc.text(`Percentile: ${item.percentile}%`, 155, y + 10.5);
+      doc.text(`Percentile: ${item.percentile}%`, 155, y + 9.5);
+      y += 21;
 
-      y += 23;
-
-      // 4. SECTION HEADING
+      // 4. Section Title
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(15, 23, 42);
-      doc.text('Question-by-Question Solutions & Explanations', 14, y);
+      doc.text('Question-by-Question Response Breakdown & Solutions', 14, y);
       y += 7;
 
-      // 5. QUESTION CARDS LOOP - ZERO SOLUTIONS INCLUDED (PER USER REQUEST)
+      // 5. Questions Loop (Matching View Format)
       qList.forEach((q, idx) => {
         const isCorrect = q.isCorrect;
         const isSkipped = !isCorrect && (q.selectedOption === 'Unattempted' || !q.selectedOption);
-        
+
         let statusText = 'INCORRECT (-0.5 Marks)';
-        if (isCorrect) {
-          statusText = 'CORRECT (+2.0 Marks)';
-        } else if (isSkipped) {
-          statusText = 'UNATTEMPTED (0.0 Marks)';
-        }
+        if (isCorrect) statusText = 'CORRECT (+2.0 Marks)';
+        else if (isSkipped) statusText = 'UNATTEMPTED (0.0 Marks)';
 
-        const cleanQuestion = sanitizePDFText(q.question);
-        const cleanSelected = sanitizePDFText(q.selectedOption || 'Unattempted');
-        const cleanCorrect = sanitizePDFText(q.correctOption || 'Option A');
+        const cleanQ = sanitize(q.question);
+        const cleanUserOpt = sanitize(q.selectedOption || 'Unattempted');
+        const cleanCorrOpt = sanitize(q.correctOption || 'Option A');
+        const cleanExp = sanitize(q.explanation);
 
-        // Pre-calculate wrapped lines for Question & Choices (NO SOLUTIONS)
+        // Calculate Text Heights
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(9.5);
-        const qLines = doc.splitTextToSize(`Q${idx + 1}. ${cleanQuestion}`, maxTextWidth);
+        const qLines = doc.splitTextToSize(`Q${idx + 1}. ${cleanQ}`, maxTextWidth);
 
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8.5);
-        const userOptLines = doc.splitTextToSize(cleanSelected, maxTextWidth - 26);
-        const corrOptLines = doc.splitTextToSize(cleanCorrect, maxTextWidth - 30);
+        const userOptLines = doc.splitTextToSize(cleanUserOpt, maxTextWidth - 26);
+        const corrOptLines = doc.splitTextToSize(cleanCorrOpt, maxTextWidth - 30);
 
-        // Dynamic Heights (Zero Solution height)
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        const expLines = cleanExp ? doc.splitTextToSize(`Explanation: ${cleanExp}`, maxTextWidth - 10) : [];
+
         const headerHeight = 9.5;
         const qHeight = (qLines.length * 4.6) + 2;
         const userOptHeight = (userOptLines.length * 4.2) + 1;
         const corrOptHeight = (corrOptLines.length * 4.2) + 1;
-        const optionsHeight = userOptHeight + corrOptHeight + 2;
-        const cardPadding = 5;
+        const expHeight = cleanExp ? (expLines.length * 3.8) + 4 : 0;
+        const boxHeight = headerHeight + qHeight + userOptHeight + corrOptHeight + expHeight + 6;
 
-        const boxHeight = headerHeight + qHeight + optionsHeight + cardPadding;
-
-        // Auto Page-Break Check
+        // Auto Page-Break Check (Clean Page Splits - No Black Lines!)
         if (y + boxHeight > 275) {
           doc.addPage();
           y = 14;
         }
 
-        // Card Outer Background & Border
+        // Card Outer Fill & Border
         if (isCorrect) {
           doc.setFillColor(240, 253, 244);
           doc.setDrawColor(187, 247, 208);
@@ -317,14 +284,14 @@ export default function ProgressHistoryView() {
         }
         doc.roundedRect(14, y, pageWidth - 28, boxHeight, 2.5, 2.5, 'FD');
 
-        // --- CARD HEADER ROW ---
+        // Card Header Row
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(9);
         doc.setTextColor(30, 58, 138);
         doc.text(`QUESTION ${idx + 1}`, 19, y + 6.5);
 
-        // Right Status Badge
-        const badgeWidth = 42;
+        // Status Badge
+        const badgeWidth = 44;
         const badgeX = pageWidth - 19 - badgeWidth;
         if (isCorrect) {
           doc.setFillColor(220, 252, 231);
@@ -344,11 +311,11 @@ export default function ProgressHistoryView() {
         doc.setFont('helvetica', 'bold');
         doc.text(statusText, badgeX + (badgeWidth / 2), y + 5.8, { align: 'center' });
 
-        // Divider Line below Header Row
+        // Divider
         doc.setDrawColor(isCorrect ? 209 : (isSkipped ? 226 : 254), isCorrect ? 250 : (isSkipped ? 232 : 215), isCorrect ? 229 : (isSkipped ? 240 : 215));
         doc.line(14, y + headerHeight, pageWidth - 14, y + headerHeight);
 
-        // --- ROW 2: QUESTION TEXT ---
+        // Question Text
         let currentY = y + headerHeight + 5;
         doc.setFontSize(9.5);
         doc.setFont('helvetica', 'bold');
@@ -359,11 +326,9 @@ export default function ProgressHistoryView() {
 
         currentY += qHeight;
 
-        // --- ROW 3: STACKED OPTIONS ---
+        // Your Choice
         doc.setFontSize(8.5);
         doc.setFont('helvetica', 'bold');
-        
-        // Option 1: Your Choice
         doc.setTextColor(100, 116, 139);
         doc.text('Your Choice:', 19, currentY);
         doc.setTextColor(isCorrect ? 22 : (isSkipped ? 71 : 185), isCorrect ? 101 : (isSkipped ? 85 : 28), isCorrect ? 52 : (isSkipped ? 105 : 28));
@@ -373,7 +338,7 @@ export default function ProgressHistoryView() {
 
         currentY += userOptHeight + 1;
 
-        // Option 2: Correct Answer
+        // Correct Answer
         doc.setTextColor(100, 116, 139);
         doc.text('Correct Answer:', 19, currentY);
         doc.setTextColor(22, 101, 52);
@@ -381,16 +346,25 @@ export default function ProgressHistoryView() {
           doc.text(line, 48, currentY + (lIdx * 4.2));
         });
 
+        // Explanation (Matching View Format)
+        if (cleanExp) {
+          currentY += corrOptHeight + 2;
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(71, 85, 105);
+          expLines.forEach((line, lIdx) => {
+            doc.text(line, 19, currentY + (lIdx * 3.8));
+          });
+        }
+
         y += boxHeight + 5;
       });
 
-      // Save Genuine Binary PDF File Directly
       doc.save(pdfFileName);
-
       if (triggerToast) triggerToast(`PDF downloaded successfully: ${pdfFileName}`, 'success');
     } catch (err) {
       console.error('jsPDF generation error:', err);
-      if (triggerToast) triggerToast('Failed to generate PDF file.', 'warning');
+      if (triggerToast) triggerToast('Failed to generate PDF report.', 'warning');
     }
   };
 
@@ -720,53 +694,84 @@ export default function ProgressHistoryView() {
 
               {/* Questions List */}
               <div className="space-y-4">
-                {getQuestionBreakdown(selectedHistoryItem).map((q, idx) => (
-                  <div 
-                    key={q.id || idx}
-                    className={`p-4 rounded-2xl border space-y-2.5 transition-all ${
-                      q.isCorrect 
-                        ? 'bg-emerald-50/50 border-emerald-200' 
-                        : 'bg-red-50/50 border-red-200'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start space-x-2">
-                        <span className="font-extrabold text-xs text-slate-700 shrink-0">Q{idx + 1}.</span>
-                        <p className="text-xs font-bold text-slate-900 leading-relaxed">{q.question}</p>
-                      </div>
-                      <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border flex items-center space-x-1 shrink-0 ${
-                        q.isCorrect 
-                          ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-                          : 'bg-red-100 text-red-800 border-red-300'
-                      }`}>
-                        {q.isCorrect ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <XCircle className="w-3.5 h-3.5 text-red-600" />}
-                        <span>{q.isCorrect ? 'Correct (+2.0)' : 'Incorrect (-0.5)'}</span>
-                      </span>
-                    </div>
+                {getQuestionBreakdown(selectedHistoryItem).map((q, idx) => {
+                  const isCorrect = q.isCorrect;
+                  const isSkipped = !isCorrect && (q.selectedOption === 'Unattempted' || !q.selectedOption);
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-medium pt-1">
-                      <div className="bg-white/80 p-2.5 rounded-xl border border-slate-200/80">
-                        <span className="text-[10px] text-slate-400 block font-bold uppercase">Your Choice</span>
-                        <span className={q.isCorrect ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
-                          {q.selectedOption}
+                  const statusText = isCorrect 
+                    ? 'CORRECT (+2.0 Marks)' 
+                    : isSkipped 
+                    ? 'UNATTEMPTED (0.0 Marks)' 
+                    : 'INCORRECT (-0.5 Marks)';
+
+                  const cleanQText = String(q.question || '')
+                    .replace(/\*\*/g, '')
+                    .replace(/\s+!\s+/g, ' → ')
+                    .replace(/!\s+/g, ' → ')
+                    .trim();
+
+                  const cleanExpText = String(q.explanation || '')
+                    .replace(/\*\*/g, '')
+                    .replace(/\s+!\s+/g, ' → ')
+                    .replace(/!\s+/g, ' → ')
+                    .trim();
+
+                  return (
+                    <div 
+                      key={q.id || idx}
+                      className="p-4 rounded-xl border border-slate-200 bg-white space-y-3 shadow-2xs"
+                    >
+                      {/* Card Header Bar */}
+                      <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                        <span className="font-extrabold text-xs text-blue-900 tracking-wider uppercase">
+                          QUESTION {idx + 1}
+                        </span>
+                        <span className={`text-[11px] font-bold px-3 py-0.5 rounded-full border ${
+                          isCorrect 
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+                            : isSkipped
+                            ? 'bg-slate-100 text-slate-700 border-slate-200'
+                            : 'bg-red-50 text-red-800 border-red-200'
+                        }`}>
+                          {statusText}
                         </span>
                       </div>
-                      <div className="bg-white/80 p-2.5 rounded-xl border border-slate-200/80">
-                        <span className="text-[10px] text-slate-400 block font-bold uppercase">Correct Answer</span>
-                        <span className="text-emerald-700 font-bold">
-                          {q.correctOption}
-                        </span>
-                      </div>
-                    </div>
 
-                    {q.explanation && (
-                      <div className="bg-white/90 p-3 rounded-xl border border-slate-200 text-xs text-slate-700 leading-relaxed mt-2">
-                        <strong className="text-slate-900 font-bold block mb-0.5">Solution & Explanation:</strong>
-                        {q.explanation}
+                      {/* Question Text */}
+                      <p className="text-xs font-bold text-slate-900 leading-relaxed margin-0">
+                        Q{idx + 1}. {cleanQText}
+                      </p>
+
+                      {/* Choice Stack */}
+                      <div className="space-y-1 text-xs font-semibold text-slate-700 pt-0.5">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-slate-500 font-bold min-w-[110px]">Your Choice:</span>
+                          <span className={isCorrect ? 'text-emerald-700 font-bold' : isSkipped ? 'text-slate-600 font-bold' : 'text-red-700 font-bold'}>
+                            {q.selectedOption || 'Unattempted'}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-slate-500 font-bold min-w-[110px]">Correct Answer:</span>
+                          <span className="text-emerald-700 font-extrabold">
+                            {q.correctOption || 'Option A'}
+                          </span>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                ))}
+
+                      {/* Explanation Block */}
+                      {cleanExpText && (
+                        <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700 leading-relaxed mt-2">
+                          <span className="text-slate-500 font-bold block mb-1">
+                            Explanation:
+                          </span>
+                          <div className="text-slate-800 font-medium">
+                            {cleanExpText}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

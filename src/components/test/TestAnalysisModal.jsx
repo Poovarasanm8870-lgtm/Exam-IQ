@@ -80,14 +80,18 @@ export default function TestAnalysisModal() {
           .trim();
       };
 
-      // Banner Header
+      // Banner Header (Exam Name / Topic & Candidate Info)
       doc.setFillColor(30, 58, 138);
-      doc.roundedRect(14, y, pageWidth - 28, 15, 2, 2, 'F');
+      doc.roundedRect(14, y, pageWidth - 28, 18, 2, 2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11.5);
+      doc.setFontSize(11);
       doc.setTextColor(255, 255, 255);
-      doc.text(sanitize(`${user?.targetExamName || 'ExamiQ'} - Test Scorecard`), 18, y + 9.5);
-      y += 19;
+      doc.text(sanitize(`${testTitle || user?.targetExamName || 'ExamiQ'} - Test Scorecard`), 18, y + 7.5);
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(219, 234, 254);
+      doc.text(sanitize(`Candidate: ${user?.name || 'Aspirant Student'} (${user?.email || 'aspirant@examiq.com'})  |  Date: ${new Date().toLocaleDateString()}`), 18, y + 13.5);
+      y += 22;
 
       // Scorecard Summary
       doc.setFillColor(239, 246, 255);
@@ -129,7 +133,9 @@ export default function TestAnalysisModal() {
         const cleanUserOpt = sanitize(userOptObj ? userOptObj.text : (userAns || 'Unattempted'));
         const cleanCorrOpt = sanitize(corrOptObj ? corrOptObj.text : (q.correctOptionId || 'Option A'));
 
-        // Pre-calculate wrapped lines for Question & Choices (NO SOLUTIONS)
+        const cleanExp = sanitize(q.explanation);
+
+        // Pre-calculate wrapped lines for Question, Choices & Explanation (Matching View Format)
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(9.5);
         const qLines = doc.splitTextToSize(`Q${idx + 1}. ${cleanQ}`, maxTextWidth);
@@ -139,12 +145,17 @@ export default function TestAnalysisModal() {
         const userOptLines = doc.splitTextToSize(cleanUserOpt, maxTextWidth - 26);
         const corrOptLines = doc.splitTextToSize(cleanCorrOpt, maxTextWidth - 30);
 
-        // Dynamic Heights (Zero Solution height)
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        const expLines = cleanExp ? doc.splitTextToSize(`Explanation: ${cleanExp}`, maxTextWidth - 10) : [];
+
+        // Dynamic Heights
         const headerHeight = 9.5;
         const qHeight = (qLines.length * 4.6) + 2;
         const userOptHeight = (userOptLines.length * 4.2) + 1;
         const corrOptHeight = (corrOptLines.length * 4.2) + 1;
-        const optionsHeight = userOptHeight + corrOptHeight + 2;
+        const expHeight = cleanExp ? (expLines.length * 3.8) + 4 : 0;
+        const optionsHeight = userOptHeight + corrOptHeight + expHeight + 2;
         const cardPadding = 5;
 
         const boxHeight = headerHeight + qHeight + optionsHeight + cardPadding;
@@ -231,6 +242,17 @@ export default function TestAnalysisModal() {
         corrOptLines.forEach((line, lIdx) => {
           doc.text(line, 48, currentY + (lIdx * 4.2));
         });
+
+        // Option 3: Explanation (Matching View Format)
+        if (cleanExp) {
+          currentY += corrOptHeight + 2;
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(71, 85, 105);
+          expLines.forEach((line, lIdx) => {
+            doc.text(line, 19, currentY + (lIdx * 3.8));
+          });
+        }
 
         y += boxHeight + 5;
       });

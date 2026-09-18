@@ -79,7 +79,7 @@ export default function AspirantDashboard() {
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-outfit tracking-tight">
+            <h1 className="text-fluid-h1 font-extrabold font-outfit tracking-tight text-white leading-tight">
               Welcome back, {user?.name || 'Aspirant'}! 👋
             </h1>
             <p className="text-blue-100 text-sm max-w-2xl leading-relaxed">
