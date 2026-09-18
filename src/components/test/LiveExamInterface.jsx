@@ -62,6 +62,9 @@ export default function LiveExamInterface() {
   // Strict Proctoring & Tab Switch Violation State
   const [candidateEmail, setCandidateEmail] = useState(user?.email || '');
   const [sendEmailReport, setSendEmailReport] = useState(true);
+  const hasTabViolationSubmittedRef = React.useRef(false);
+  const hasRecordedAttemptRef = React.useRef(false);
+  const lastResultRef = React.useRef(null);
 
   // Dynamically sync candidate recipient email with logged-in user session email
   useEffect(() => {
@@ -72,11 +75,10 @@ export default function LiveExamInterface() {
 
   // Comprehensive Single-Tab Switch & Focus Loss Proctoring Auto-Submission
   useEffect(() => {
-    let hasSubmittedOnTabSwitch = false;
-
     const executeImmediateTabSwitchSubmission = (reason = 'Tab Switch') => {
-      if (hasSubmittedOnTabSwitch) return;
-      hasSubmittedOnTabSwitch = true;
+      if (hasRecordedAttemptRef.current || hasTabViolationSubmittedRef.current) return;
+      hasRecordedAttemptRef.current = true;
+      hasTabViolationSubmittedRef.current = true;
       setShowTabWarningBanner(false);
 
       // 1. Immediately open Tab Switch Violation Popup Alert Modal on screen
@@ -85,11 +87,12 @@ export default function LiveExamInterface() {
         triggerToast(`🚨 Single-Tab Proctoring Violation (${reason}): Live exam auto-submitted!`, 'warning');
       }
 
-      // 2. Record tab_switch attempt in SQLite database & dispatch performance email report
+      // 2. Record tab_switch attempt in SQLite database & dispatch performance email report EXACTLY ONCE
       try {
         const recipient = candidateEmail || user?.email || 'aspirant@examiq.com';
         if (calculateTestResults) {
           const summary = calculateTestResults('tab_switch', recipient);
+          lastResultRef.current = summary;
           if (setLastTestResult) setLastTestResult(summary);
           if (recipient) {
             dispatchPerformanceEmail(summary, recipient);
@@ -101,7 +104,7 @@ export default function LiveExamInterface() {
     };
 
     const handleMouseLeave = (e) => {
-      if (e.clientY <= 0 && !hasSubmittedOnTabSwitch) {
+      if (e.clientY <= 0 && !hasRecordedAttemptRef.current) {
         setShowTabWarningBanner(true);
         if (triggerToast) {
           triggerToast('🚨 PROCTORING WARNING: Do not switch tabs! Stay on this window.', 'warning');
@@ -155,10 +158,24 @@ export default function LiveExamInterface() {
 
   // Trigger popup modal when remaining time reaches 0
   useEffect(() => {
-    if (remainingTimeSeconds === 0 && !showSubmitModal) {
+    if (remainingTimeSeconds === 0 && !hasRecordedAttemptRef.current) {
+      hasRecordedAttemptRef.current = true;
       setShowSubmitModal('time_expired');
+      try {
+        const recipient = candidateEmail || user?.email || 'aspirant@examiq.com';
+        if (calculateTestResults) {
+          const summary = calculateTestResults('time_expired', recipient);
+          lastResultRef.current = summary;
+          if (setLastTestResult) setLastTestResult(summary);
+          if (recipient) {
+            dispatchPerformanceEmail(summary, recipient);
+          }
+        }
+      } catch (e) {
+        console.error('Error saving time expired history:', e);
+      }
     }
-  }, [remainingTimeSeconds, showSubmitModal]);
+  }, [remainingTimeSeconds, candidateEmail, user?.email, calculateTestResults, setLastTestResult, dispatchPerformanceEmail]);
 
   // Calculate dynamic active total test duration from AppContext
   const activeTestDuration = (typeof totalTestDurationSeconds === 'number' && !isNaN(totalTestDurationSeconds) && totalTestDurationSeconds > 0)
@@ -686,8 +703,18 @@ export default function LiveExamInterface() {
                   const targetMethod = typeof showSubmitModal === 'string' ? showSubmitModal : 'manual';
                   const emailRecipient = sendEmailReport ? (candidateEmail || user?.email) : false;
                   setShowSubmitModal(false);
-                  submitTestFinal(emailRecipient, targetMethod);
-                  setCurrentView('test-analysis');
+
+                  if (hasRecordedAttemptRef.current) {
+                    // Attempt was ALREADY recorded by tab switch or time expiration!
+                    if (emailRecipient && lastResultRef.current && dispatchPerformanceEmail) {
+                      dispatchPerformanceEmail(lastResultRef.current, emailRecipient);
+                    }
+                    setCurrentView('test-analysis');
+                  } else {
+                    hasRecordedAttemptRef.current = true;
+                    submitTestFinal(emailRecipient, targetMethod);
+                    setCurrentView('test-analysis');
+                  }
                 }}
                 className={`px-6 py-2.5 rounded-xl text-white text-xs font-bold shadow-md cursor-pointer transition-all flex items-center space-x-1.5 ${
                   showSubmitModal === 'tab_switch'

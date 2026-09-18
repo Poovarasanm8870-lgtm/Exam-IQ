@@ -74,19 +74,39 @@ export const getDaysRemainingForExam = (examIdOrName, adminDatesMap = {}) => {
   }
 };
 
-// Helper function to deduplicate attempt history by unique ID
+// Helper function to deduplicate attempt history by unique ID and 5-minute duplicate event window per test title
 export const deduplicateAttemptHistory = (historyList = []) => {
   if (!Array.isArray(historyList)) return [];
   const seenId = new Set();
+  const seenTitleDateMap = new Map(); // title_date -> timestamp
   const result = [];
 
   for (const item of historyList) {
     if (!item) continue;
     const itemId = item.id || item.attempt_id || item.attemptId;
-    if (itemId) {
-      if (seenId.has(itemId)) continue;
-      seenId.add(itemId);
+    if (itemId && seenId.has(itemId)) continue;
+
+    const rawTitle = item.testTitle || item.test_title || 'Practice Test Session';
+    const title = String(rawTitle).replace(/\s*\(\d+\s*Questions\)/i, '').trim();
+    const date = item.date || item.date_str || new Date().toISOString().split('T')[0];
+
+    let itemTs = 0;
+    if (itemId && String(itemId).startsWith('attempt_')) {
+      const parsed = parseInt(String(itemId).replace('attempt_', ''), 10);
+      if (!isNaN(parsed) && parsed > 0) itemTs = parsed;
     }
+
+    const titleDateKey = `${title}_${date}`;
+    const lastTs = seenTitleDateMap.get(titleDateKey);
+
+    if (lastTs && itemTs > 0 && Math.abs(lastTs - itemTs) < 300000) {
+      continue;
+    }
+
+    if (itemId) seenId.add(itemId);
+    if (itemTs > 0) seenTitleDateMap.set(titleDateKey, itemTs);
+    else seenTitleDateMap.set(titleDateKey, Date.now());
+
     result.push(item);
   }
   return result;
